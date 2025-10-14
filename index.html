@@ -1,184 +1,233 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css" />
     <title>travel pics · architecture</title>
   </head>
   <body>
     <div class="root">
-
       <div class="header">
         <div class="header-title">travel pics · architecture</div>
-        <div class="header-sub-title"> behind the scenes of building a full-stack travel picture diary </div>
+        <div class="header-sub-title">
+          behind the scenes of building a full-stack travel picture diary
+        </div>
       </div>
 
-      <div class="section-title">
-        intro
-      </div>
-        When I told my friend Lily that I had to travel to Europe for work, she ran upstairs, 
-        grabbed her scarf, put on her sunglasses, and smacked her lips together after painting them a bright shade of red. 
-        "When are we leaving? How far is the Eiffel Tower from your office?" she asked excitedly. 
+      <div class="section-title">intro</div>
+      When I told my friend Lily that I had to travel to Europe for work, she
+      ran upstairs, grabbed her scarf, put on her sunglasses, and smacked her
+      lips together after painting them a bright shade of red. "When are we
+      leaving? How far is the Eiffel Tower from your office?" she asked
+      excitedly. Oh, the disappointment on her face when I told her I would be
+      spending a few weeks in the Balkans — nowhere near Paris or London!
+      <br />
+      <br />
 
-        Oh, the disappointment on her face when I told her I would be spending a few weeks in the Balkans — 
-        nowhere near Paris or London! 
-        <br />
-        <br />
+      Hugged by the Sava and Danube rivers, Belgrade's old city sits atop a
+      beautiful, steep hill. Throughout history, Beograd (Belgrade in Serbian)
+      was razed to the ground and rebuilt about 40 times, and reminders of its
+      rough past are visible everywhere. It is a city where past and present
+      coexist in a strange flow, and elegant, pristine Austrian-inspired
+      buildings clash with the cold and rigid geometries of brutalist
+      architecture.
+      <br />
+      <br />
+      Beograd definitely left a mark on me. It is difficult to become friends
+      with her. Smiles are rare but hospitality is as abudant as rakija and
+      &#263;evapi (their staple brandy and meat dishes).
+      <br />
+      <br />
+      I wanted to capture the quirkiness of the city in a different way and so I
+      decided to build a full-stack project called
+      <a href="http://18.216.159.247" id="travels"> travel pictures</a>, a
+      collection of the most significant photos I took during my stay. Paired
+      with personalized captions and emojis, I hope to give a small tribute to a
+      widely underrated city and give a little cheer to the friendships I made
+      along the way.
+      <br />
+      <br />
 
-        Hugged by the Sava and Danube rivers, Belgrade's old city sits atop 
-        a beautiful, steep hill. Throughout history, Beograd (Belgrade in Serbian) 
-        was razed to the ground and rebuilt 
-        about 40 times, and reminders of its rough past are visible everywhere. 
-        It is a city where past and present coexist in a strange flow, 
-        and elegant, pristine Austrian-inspired 
-        buildings clash with the cold and rigid geometries of brutalist architecture.
-        <br />  
-        <br />  
-        Beograd definitely left a mark on me. It is difficult to become friends with her. 
-        Smiles are rare but hospitality is as abudant as rakija and &#263;evapi (their staple brandy and 
-        meat dishes). 
-        <br />  
-        <br />  
-        I wanted to capture the quirkiness of the city in a different way 
-        and so I decided to build a full-stack project called <a href="http://18.216.159.247" id="travels"> travel pictures</a>, a collection 
-        of the most significant photos I took during my stay. Paired with personalized captions and emojis, I hope to give a small tribute 
-        to a widely underrated city and give a little cheer to the friendships I made along the way.
-        <br />
-        <br />
+      <div class="section-title">technical details</div>
+      The <a href="http://18.216.159.247" id="travels"> travel pictures</a> is a
+      full-stack web app fully hosted on aws. It is composed of:
+      <br />
+      • <strong>backend</strong>: flask + gunicorn running on an AWS EC2
+      instance
+      <br />
+      • <strong>frontend</strong>: react + css
+      <br />
+      • <strong>storage</strong>: s3 for pictures, dynamoDB for reaction counts
+      and photo captions
+      <br />
+      • <strong>proxy & routing</strong>: nginx handles both static file serving
+      and API proxying.
+      <br />
 
-        <div class="section-title">
-          technical details
-         </div>
-            The <a href="http://18.216.159.247" id="travels"> travel pictures</a> is a full-stack web app fully hosted on aws. It is composed of: 
-            <br />
-            • <strong>backend</strong>: flask + gunicorn running on an AWS EC2 instance
-            <br />
-            • <strong>frontend</strong>: react + css
-            <br />
-            • <strong>storage</strong>: s3 for pictures, dynamoDB for reaction counts and photo captions
-            <br />
-            • <strong>proxy & routing</strong>: nginx handles both static file serving and API proxying.
-            <br />
+      The diagram below shows the design of the overall architecture:
+      <br />
+      <img src="architecture_1.jpg" id="img_architecture" />
+      <br />
 
-            The diagram below shows the design of the overall architecture:
-            <br/>   
-            <img src="architecture_1.jpg" id="img_architecture"/>
-            <br/>
+      A client request goes through the following steps:
+      <br />
+      1. nginx first receives the request and immediately renders the static
+      page
+      <br />
+      2. as the page loads, nginx proxies the request to the gunicorn/flask app
+      <br />
+      3. gunicorn queries dynamoDB and s3 to retrieve the travel pictures,
+      reaction counts and captions
+      <br />
+      4. the landing page is finally populated with the personalized pictures.
+      <br />
+      <br />
+      <div class="section-title">data models in dynamoDB</div>
 
-            A client request goes through the following steps:
-            <br/>
-            1. nginx first receives the request and immediately renders the static page
-            <br />
-            2. as the page loads, nginx proxies the request to the gunicorn/flask app
-            <br />
-            3. gunicorn queries dynamoDB and s3 to retrieve the travel pictures, reaction counts and captions
-            <br />
-            4. the landing page is finally populated with the personalized pictures.
-            <br />
-        <br />
-        <div class="section-title">
-            data models in dynamoDB
-        </div>
+      <!-- <p class="text"> -->
+      If you are unfamiliar with dynamoDB, here is a quick summary of its main
+      components:
+      <br />
+      • data is organized in <strong>tables</strong>, a collection of
+      <strong>items</strong> which are composed of <strong>attributes</strong>.
+      <br />
+      • dynamoDB is <strong>schemaless</strong>, meaning that there is no need
+      to specify the data type like in a traditional relational database.
+      <br />
+      • dynamoDB supports <strong>primary keys</strong>.
+      <br />
+      <br />
 
-        <!-- <p class="text"> -->
-        If you are unfamiliar with dynamoDB, here is a quick summary of its main components: 
-        <br />
-        • data is organized in <strong>tables</strong>, a collection of <strong>items</strong> which are composed of <strong>attributes</strong>.
-        <br />
-        • dynamoDB is <strong>schemaless</strong>, meaning that there is no need to specify the data type like in a traditional relational database.
-        <br />
-        • dynamoDB supports <strong>primary keys</strong>. 
-        <br />
-        <br />
+      There are two types of primary keys in dynamoDB:
+      <br />
+      • <strong>partition key</strong> which uniquely identifies each item in
+      the table.
+      <br />
+      • composite key of <strong> partition + sort key</strong> where each
+      combination of pk + sk must be unique.
+      <br />
+      <br />
 
-        There are two types of primary keys in dynamoDB:
-        <br />
-        • <strong>partition key</strong> which uniquely identifies each item in the table. 
-        <br />
-        • composite key of <strong> partition + sort key</strong> where each combination of pk + sk must be unique.
-        <br />
-        <br />
+      In the travel project I used a <strong>composite</strong> key model where:
+      <br />
+      • the <strong>partition key</strong> identifies a primary resource of a
+      trip to be stored or displayed. For example, a photo or a written memory
+      are unique records that are good candidates for a partition key.
+      <br />
+      • I then used the <strong>sort key</strong> to identify which trip the
+      item belongs to. I used the city's name as an identifier. Dates or years
+      of when the trip was taken are also good options to uniquely identify an
+      item and its associated trip.
 
-        In the travel project I used a <strong>composite</strong> key model where:
-        <br />
-        • the  <strong>partition key</strong> identifies a primary resource of a trip to be stored or displayed. For example, a photo or a written memory are unique records that 
-            are good candidates for a partition key.
-        <br />
-        • I then used the  <strong>sort key</strong> to identify which trip the item belongs to. I used the city's name as an identifier. 
-        Dates or years of when the trip was taken are also good options to
-                uniquely identify an item and its associated trip.
-    
-        <br />
-        <br />
+      <br />
+      <br />
 
-        Here is an example of how data is stored in my dynamoDB travels table: 
-        <table>
-            <tr>
-                <th class="t-header">partition key </th>
-                <th class="t-header">sort key  </th>
-                <th class="t-header">title  </th>
-                <th class="t-header">description  </th>
-                <th class="t-header">likes</th>
-            </tr>
-            <tr>
-                <th class="t-item">photo</th>
-                <th class="t-item">beograd:001</th>
-                <th class="t-item">river</th>
-                <th class="t-item">danube waltz</th>
-                <th class="t-item">3</th>
-            </tr>
-            <tr>
-                <th class="t-item">memory</th>
-                <th class="t-item">barcelona:909</th>
-                <th class="t-item">sagrada</th>
-                <th class="t-item">breathtaking</th>
-                <th class="t-item">88</th>
-            </tr>
-            </table>
-        <br />
-        I designed the dynamoDB table with flexibility and scalability in mind. 
-         By using a schema-less design, I can easily add new attributes — such as tags, location, 
-         or other photo metadata — without modifying the table structure. 
-         In a traditional relational database, introducing new attributes 
-         often requires multiple migrations or even creating additional tables.
-         DynamoDB's flexible item model allows me to extend the schema incrementally, 
-        making it straightforward to support new features and evolving requirements.
-        <br />
-        <br />
-        <div class="section-title">
-          next steps
-        </div>
-            To consider in future releases:
-            <br/>
-            • https vs http 
-            <br/>
-            • replace ip address with a domain 
-            <br/>
-            • add firewall, api gateway 
-            <br/>
-            • logging 
-            <br/>
-            • unit tests &#128584;
-        <br />
-        <br />
+      Here is an example of how data is stored in my dynamoDB travels table:
+      <table>
+        <tr>
+          <th class="t-header">partition key</th>
+          <th class="t-header">sort key</th>
+          <th class="t-header">title</th>
+          <th class="t-header">description</th>
+          <th class="t-header">likes</th>
+        </tr>
+        <tr>
+          <th class="t-item">photo</th>
+          <th class="t-item">beograd:001</th>
+          <th class="t-item">river</th>
+          <th class="t-item">danube waltz</th>
+          <th class="t-item">3</th>
+        </tr>
+        <tr>
+          <th class="t-item">memory</th>
+          <th class="t-item">barcelona:909</th>
+          <th class="t-item">sagrada</th>
+          <th class="t-item">breathtaking</th>
+          <th class="t-item">88</th>
+        </tr>
+      </table>
+      <br />
+      I designed the dynamoDB table with flexibility and scalability in mind. By
+      using a schema-less design, I can easily add new attributes — such as
+      tags, location, or other photo metadata — without modifying the table
+      structure. In a traditional relational database, introducing new
+      attributes often requires multiple migrations or even creating additional
+      tables. DynamoDB's flexible item model allows me to extend the schema
+      incrementally, making it straightforward to support new features and
+      evolving requirements.
+      <br />
+      <br />
+      <div class="section-title">next steps</div>
+      To consider in future releases:
+      <br />
+      • https vs http
+      <br />
+      • replace ip address with a domain
+      <br />
+      • add firewall, api gateway
+      <br />
+      • logging
+      <br />
+      • unit tests &#128584;
+      <br />
+      <br />
 
-        <div class="section-title">
-           final thoughts
-        </div>
-            I hope you enjoyed the <a href="http://18.216.159.247" id="travels"> travels</a> project as much as I did when building and piecing together each component. 
-            I always welcome constructive feedback and if there is anything that stood out or, if you would simply like to say hi, drop me a line at
-            <a href="mailto:luisa.pegoraro@gmail.com" id="email">luisa.pegoraro@gmail.com</a>. Until next time.
-            <p id="goodbye">  &#382;iveli &#183;  enjoy</p> 
-        <br />
-        <br />
-  
-        <br />
+      <div class="section-title">final thoughts</div>
+      I hope you enjoyed the
+      <a href="http://18.216.159.247" id="travels"> travels</a> project as much
+      as I did when building and piecing together each component. I always
+      welcome constructive feedback and if there is anything that stood out or,
+      if you would simply like to say hi, drop me a line at
+      <a href="mailto:luisa.pegoraro@gmail.com" id="email"
+        >luisa.pegoraro@gmail.com</a
+      >. Until next time.
+      <p id="goodbye">&#382;iveli &#183; enjoy</p>
+      <br />
+      <br />
+
+      <br />
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/isa-bubbles@1.2.4/dist/isa-bubbles.min.js"></script>
-  <script>
-    const bubble = new CreditBubble({ 
+    <script src="https://cdn.jsdelivr.net/npm/isa-bubbles@1.2.11/dist/isa-bubbles.min.js"></script>
+    <script type="module">
+      // import {
+      //   EMAILJS_PUBLIC_KEY,
+      //   EMAILJS_SERVICE_ID,
+      //   EMAILJS_TEMPLATE_ID,
+      // } from "./constants";
+      const handleOnFormSubmit = (e) => {
+        e.preventDefault();
+        // emailjs
+        //   .sendForm(
+        //     EMAILJS_SERVICE_ID,
+        //     EMAILJS_TEMPLATE_ID,
+        //     e.target,
+        //     EMAILJS_PUBLIC_KEY
+        //   )
+        //   .then(
+        //     (result) => {
+        //       console.log(result.text);
+        //       alert("Message sent successfully!");
+        //     },
+        //     (error) => {
+        //       console.log(error.text);
+        //       alert("Oops, something went wrong!");
+        //     }
+        //   );
+        e.target.reset();
+      };
+      const credit = new CreditBubble({
+        right: "5px",
+        zIndex: "10",
       });
-  </script>
+      const contact = new ContactBubble({
+        right: "5px",
+        bottom: "60px",
+        backgroundColorExpanded: "rgba(63, 178, 124, 0.85)",
+        fontsizeCollapsed: "18px",
+        fontSizeExpanded: "13px",
+        onSubmit: (e) => handleOnFormSubmit(e),
+      });
+    </script>
   </body>
 </html>
